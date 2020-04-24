@@ -1,8 +1,11 @@
 import * as ORE from '@ore-three-ts';
 import * as THREE from 'three';
 
+import { DOFFilter } from './DOFFilter';
+
 export class MainScene extends ORE.BaseScene {
 
+	private dof: DOFFilter;
 	private light: THREE.Light;
 
 	constructor() {
@@ -19,6 +22,8 @@ export class MainScene extends ORE.BaseScene {
 
 		this.renderer = this.gProps.renderer;
 
+		this.dof = new DOFFilter( this.renderer );
+
 		this.initScene();
 
 	}
@@ -28,15 +33,19 @@ export class MainScene extends ORE.BaseScene {
 		var boxGeo = new THREE.BoxBufferGeometry( 1, 1, 1 );
 		var boXMat = new THREE.MeshNormalMaterial();
 
-		let n = 9;
+		let n = 7;
 		let width = 20;
 		for ( let i = 0; i < n; i ++ ) {
 
 			for ( let j = 0; j < n; j ++ ) {
 
-				let box = new THREE.Mesh( boxGeo, boXMat );
-				box.position.set( width / ( n - 1 ) * j - width / 2, 0, width / ( n - 1 ) * i - width / 2 );
-				this.scene.add( box );
+				for ( let k = 0; k < n; k ++ ) {
+
+					let box = new THREE.Mesh( boxGeo, boXMat );
+					box.position.set( width / ( n - 1 ) * j - width / 2, width / ( n - 1 ) * k - width / 2, width / ( n - 1 ) * i - width / 2 );
+					this.scene.add( box );
+
+				}
 
 			}
 
@@ -55,10 +64,11 @@ export class MainScene extends ORE.BaseScene {
 	public animate( deltaTime: number ) {
 
 		let scale = 10;
-		this.camera.position.set( Math.sin( this.time ) * scale, 2, Math.cos( this.time ) * scale );
+		this.camera.position.set( Math.sin( this.time ) * scale, Math.sin( this.time ) * 5, Math.cos( this.time ) * scale );
 		this.camera.lookAt( 0, 0, 0 );
 
-		this.renderer.render( this.scene, this.camera );
+		this.dof.render( this.scene, this.camera );
+		// this.renderer.render( this.scene, this.camera );
 
 	}
 
