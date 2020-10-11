@@ -103,7 +103,7 @@ export class DOFFilter {
 				value: 1.5
 			},
 			range: {
-				value: 9.0
+				value: 91.0
 			},
 			sceneTex: this.sceneTex
 		};
